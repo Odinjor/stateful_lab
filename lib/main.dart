@@ -51,6 +51,24 @@ class _CounterWidgetState extends State<CounterWidget> {
               });
             },
           ),
+          ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _counter++;
+                  });
+                },
+                child: const Text('Increment'),
+              ),
+              const SizedBox(height: 24),
+           ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _counter = 0;
+                  });
+                },
+                child: const Text('Reset'),
+              ),
+              const SizedBox(height: 24)  
         ],
       ),
     );
