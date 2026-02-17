@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
 class CounterWidget extends StatefulWidget {
   @override
   _CounterWidgetState createState() => _CounterWidgetState();
+  
 }
 
 class _CounterWidgetState extends State<CounterWidget> {
@@ -27,6 +28,24 @@ class _CounterWidgetState extends State<CounterWidget> {
                   if (_counter > 50) return Colors.green;
                   return Colors.black;
                 }
+
+
+   late final TextEditingController _controller;
+  @override
+  void initState() {
+    super.initState();
+    // Any initialization code can go here
+    _controller = TextEditingController(
+      text: _counter.toString(),
+    ); 
+  }
+    @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +61,20 @@ class _CounterWidgetState extends State<CounterWidget> {
                 '$_counter',
                 style:
                 TextStyle(fontSize: 50.0, color: counterColor),
+                
               ),
             ),
           ),
           SizedBox(height: 20),
+          TextField(
+      controller: _controller,
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: "Enter a number",
+      ),
+    ),
+      const SizedBox(height: 20), 
           Slider(
             min: 0, max: 100,
             value: _counter.toDouble(),
@@ -53,6 +82,7 @@ class _CounterWidgetState extends State<CounterWidget> {
               // 👇 This triggers the UI rebuild
               setState(() {
                 _counter = value.toInt();
+                _controller.text = _counter.toString();
               });
             },
           ),
@@ -60,6 +90,7 @@ class _CounterWidgetState extends State<CounterWidget> {
                 onPressed: () {
                   setState(() {
                     _counter++;
+                    _controller.text = _counter.toString();
                   });
                 },
                 child: const Text('Increment'),
@@ -69,6 +100,7 @@ class _CounterWidgetState extends State<CounterWidget> {
                 onPressed: () {
                   setState(() {
                     _counter = 0;
+                    _controller.text = _counter.toString();
                   });
                 },
                 child: const Text('Reset'),
@@ -79,11 +111,31 @@ class _CounterWidgetState extends State<CounterWidget> {
                   if (_counter >= 0) {
                   setState(() {
                     _counter--;
+                    _controller.text = _counter.toString();
                   }); }
                 },
                 child: const Text('Decrement'),
               ),
-              const SizedBox(height: 24)  
+              const SizedBox(height: 24),
+              ElevatedButton(
+      onPressed: () {
+        int value = int.tryParse(_controller.text) ?? 0;
+
+        if (value > 100) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Limit Reached!"),
+            ),
+          );
+        } else {
+          setState(() {
+            _counter = value;
+            _controller.text = value.toString();
+          });
+        }
+      },
+      child: const Text("Set Value"),
+    ),  
         ],
       ),
     );
